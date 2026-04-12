@@ -6,5 +6,6 @@ router.get('/', check, ClientController.getClient);
 router.get('/all', check, ClientController.getAllClients);
 router.get('/email/:email', check, ClientController.getClientByEmail);
 router.put('/edit/:id', check, ClientController.editClient);
+router.delete('/delete/:id', check, ClientController.deleteClient);
 
 module.exports = router;

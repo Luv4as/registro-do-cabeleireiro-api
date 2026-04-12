@@ -63,3 +63,25 @@ exports.editClient = async (req, res) => {
     await client.save();
     res.json({success: true, data: client});
 }
+
+exports.deleteClient = async (req, res) => {
+    const requester = await Client.findByPk(req.client.clientId);
+
+    if (!requester)
+        return res.status(401).json({error: 'Invalid token client'});
+
+    const targetId = Number(req.params.id ?? req.client.clientId);
+    if (!Number.isInteger(targetId))
+        return res.status(400).json({error: 'Invalid id'});
+
+    if (!requester.isAdmin && requester.id !== targetId)
+        return res.status(403).json({error: 'Forbidden'});
+
+    const client = await Client.findByPk(targetId);
+    if(!client)
+        return res.status(404).json({error: 'Client not found'});
+
+    await client.destroy();
+
+    res.json({success: true, message: 'Client deleted'});
+}
