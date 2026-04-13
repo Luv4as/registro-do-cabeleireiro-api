@@ -76,6 +76,7 @@ exports.registerAdmin = async (req, res) => {
 exports.login = async (req, res) => {
     const {email, password} = req.body;
     const encrypted = encryptPassword(password);
+    
     const client = await Client.findOne({where: {email} });
     if (client && client.password === encrypted) {
         const token = generateToken(client.name, client.id);
