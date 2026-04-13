@@ -3,6 +3,12 @@ const express = require('express');
 const sequelize = require('./common/database');
 const Client = require('./common/models/Client');
 const app = express();
+const cors = require('cors');
+
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    credentials: true
+}));
 
 sequelize.sync();
 
@@ -21,7 +27,7 @@ app.get('/status', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 3007;
+const PORT = process.env.PORT || 3006;
 app.listen(PORT, ( ) => console.log(`Server is running on port ${PORT}`));
 
 app.use((err, req, res, next) => {
