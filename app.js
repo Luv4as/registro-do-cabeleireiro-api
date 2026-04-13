@@ -10,7 +10,7 @@ app.use(cors({
     credentials: true
 }));
 
-sequelize.sync();
+sequelize.sync({ alter: true });
 
 app.use(express.json());
 

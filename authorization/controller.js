@@ -14,11 +14,29 @@ const getValidationMessage = (err) => {
 
 const generateToken = (clientName, clientId) => jwt.sign({clientName, clientId}, 'your_secret_key', {expiresIn: '24h'});
 
+const getCreatorAdminIdFromToken = async (req) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return null;
+
+    const [type, token] = authHeader.split(' ');
+    if (type !== 'Bearer' || !token) return null;
+
+    try {
+        const decoded = jwt.verify(token, 'your_secret_key');
+        const admin = await Admin.findByPk(decoded.clientId);
+        return admin ? admin.id : null;
+    } catch {
+        return null;
+    }
+};
+
 exports.register = async (req, res) => {
     try {
         const {name, hairType, lastCut, cutType, servicesHad, productsUsed, phone, email, password, createdAt, updatedAt} = req.body;
         const encryptedPassword = encryptPassword(password);
+        const createdByAdminId = await getCreatorAdminIdFromToken(req);
         const client = await Client.create({
+            createdByAdminId,
             name,
             hairType,
             lastCut,

@@ -2,6 +2,7 @@ const {DataTypes, Sequelize} = require('sequelize');
 
 const ClientModel = {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    createdByAdminId: {type: DataTypes.INTEGER, allowNull: true},
     name: {type: DataTypes.STRING, allowNull: false},
     hairType: {type: DataTypes.STRING, allowNull: false},
     lastCut: {type: DataTypes.DATE, allowNull: true},

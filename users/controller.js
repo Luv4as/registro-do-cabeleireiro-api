@@ -1,6 +1,8 @@
 const sequelize = require('../common/database');
 const defineClient = require('../common/models/Client');
+const defineAdmin = require('../common/models/Admin');
 const Client = defineClient(sequelize);
+const Admin = defineAdmin(sequelize);
 
 const canAccessByEmail = (requester, targetEmail) => requester.isAdmin === true || requester.email === targetEmail;
 
@@ -29,7 +31,11 @@ exports.getClientByEmail = async (req, res) => {
 };
 
 exports.getAllClients = async (req, res) => {
-    const clients = await Client.findAll();
+    const admin = await Admin.findByPk(req.client.clientId);
+    if (!admin)
+        return res.status(403).json({error: 'Only admin can list clients'});
+
+    const clients = await Client.findAll({where: {createdByAdminId: admin.id}});
     res.json({ sucess: true, data: clients });
 };
 
