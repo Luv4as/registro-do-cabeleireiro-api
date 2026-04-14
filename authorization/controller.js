@@ -50,12 +50,12 @@ exports.register = async (req, res) => {
             updatedAt
         });
 
-        const accessToken = generateToken(name, client.id);
+        //const accessToken = generateToken(name, client.id);
 
         res.status(201).json({
             success: true,
             user: {id: client.id, ClientName: client.name, email: client.email},
-            token: accessToken
+            //token: accessToken
         });
     }catch (err) {
         const status = err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError' ? 400 : 500;
