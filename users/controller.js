@@ -6,6 +6,13 @@ const Admin = defineAdmin(sequelize);
 
 const canAccessByEmail = (requester, targetEmail) => requester.isAdmin === true || requester.email === targetEmail;
 
+const getRequesterById = async (id) => {
+    const admin = await Admin.findByPk(id);
+    if (admin) return admin;
+
+    return Client.findByPk(id);
+};
+
 exports.getClient = async (req, res) => {
     const client = await Client.findByPk(req.client.clientId);
 
@@ -15,7 +22,7 @@ exports.getClient = async (req, res) => {
 };
 
 exports.getClientByEmail = async (req, res) => {
-    const requester = await Client.findByPk(req.client.clientId);
+    const requester = await getRequesterById(req.client.clientId);
     if (!requester)
         return res.status(401).json({error: 'Invalid token client'});
 
@@ -40,7 +47,7 @@ exports.getAllClients = async (req, res) => {
 };
 
 exports.editClient = async (req, res) => {
-    const requester = await Client.findByPk(req.client.clientId);
+    const requester = await getRequesterById(req.client.clientId);
     if (!requester)
         return res.status(401).json({error: 'Invalid token client'});
 
@@ -71,7 +78,7 @@ exports.editClient = async (req, res) => {
 }
 
 exports.deleteClient = async (req, res) => {
-    const requester = await Client.findByPk(req.client.clientId);
+    const requester = await getRequesterById(req.client.clientId);
 
     if (!requester)
         return res.status(401).json({error: 'Invalid token client'});
